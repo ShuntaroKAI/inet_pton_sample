@@ -1,81 +1,26 @@
 #include <arpa/inet.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-int main(int argc, char *argv[]) {
-    //変換後のバイナリ、16バイト
-    unsigned char buf[16];
-    int domain, s;
+int main(int argc, char *argv[])
+{
+    unsigned char bin_ipv4[sizeof(struct in_addr)];
 
-    // ipv6を指定
-    domain = AF_INET6;
+    inet_pton(AF_INET, "127.0.0.1", &bin_ipv4);
 
-    // 戻り値が
-    // 正:正常終了
-    // その他:エラー
-    s = inet_pton(domain, "1:2:3:4:5:6:7:8", buf);
-    if (s <= 0) {
-        if (s == 0)
-            fprintf(stderr, "Not in presentation format");
-        else
-            perror("inet_pton");
-        exit(EXIT_FAILURE);
+    printf("127.0.0.1\n");
+    for (int i = 0; i < 4; i++)
+    {
+        printf("\t%dバイト目:%d\n", i, bin_ipv4[i]);
     }
+    
+    unsigned char bin_ipv6[sizeof(struct in6_addr)];
+    inet_pton(AF_INET6, "1:2:3:4:5:6:7:8", &bin_ipv6);
 
     printf("1:2:3:4:5:6:7:8\n");
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 16; i++)
     {
-        printf("\t%d番目上位バイト:%d\n", i, buf[i*2]);
-        printf("\t%d番目下位バイト:%d\n", i, buf[i*2+1]);
+        printf("\t%dバイト目:%d\n", i, bin_ipv6[i]);
     }
     
-    /*
-    1:2:3:4:5:6:7:8
-        0番目上位バイト:0
-        0番目下位バイト:1
-        1番目上位バイト:0
-        1番目下位バイト:2
-        2番目上位バイト:0
-        2番目下位バイト:3
-        3番目上位バイト:0
-        3番目下位バイト:4
-        4番目上位バイト:0
-        4番目下位バイト:5
-        5番目上位バイト:0
-        5番目下位バイト:6
-        6番目上位バイト:0
-        6番目下位バイト:7
-        7番目上位バイト:0
-        7番目下位バイト:8
-    */
-
-    inet_pton(domain, "::1", buf);
-    printf("::1\n");
-    for (int i = 0; i < 8; i++)
-    {
-        printf("\t%d番目上位バイト:%d\n", i, buf[i*2]);
-        printf("\t%d番目下位バイト:%d\n", i, buf[i*2+1]);
-    }
-    /*
-    ::1
-        0番目上位バイト:0
-        0番目下位バイト:0
-        1番目上位バイト:0
-        1番目下位バイト:0
-        2番目上位バイト:0
-        2番目下位バイト:0
-        3番目上位バイト:0
-        3番目下位バイト:0
-        4番目上位バイト:0
-        4番目下位バイト:0
-        5番目上位バイト:0
-        5番目下位バイト:0
-        6番目上位バイト:0
-        6番目下位バイト:0
-        7番目上位バイト:0
-        7番目下位バイト:1
-    */
-    
-    exit(EXIT_SUCCESS);
+    return 0;
 }
